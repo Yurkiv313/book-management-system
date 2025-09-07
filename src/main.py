@@ -1,8 +1,7 @@
 from fastapi import FastAPI
+from src.routes import user
 
-app = FastAPI()
+app = FastAPI(title="Book Management System")
 
 
-@app.get("/ping")
-def ping():
-    return {"message": "pong"}
+app.include_router(user.router)

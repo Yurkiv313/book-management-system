@@ -9,3 +9,5 @@ python-jose
 pydantic
 flake8
 dotenv
+pydantic[email]
+greenlet
