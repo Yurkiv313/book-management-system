@@ -1,0 +1,182 @@
+[
+    {
+        "title": "The Lost World",
+        "genre": "History",
+        "published_year": 2004,
+        "author_id": 4
+    },
+    {
+        "title": "Future of AI",
+        "genre": "Fiction",
+        "published_year": 1991,
+        "author_id": 1
+    },
+    {
+        "title": "Deep Ocean",
+        "genre": "Science",
+        "published_year": 1894,
+        "author_id": 3
+    },
+    {
+        "title": "History of Rome",
+        "genre": "Non-Fiction",
+        "published_year": 1851,
+        "author_id": 1
+    },
+    {
+        "title": "Science and Space",
+        "genre": "Science",
+        "published_year": 1870,
+        "author_id": 5
+    },
+    {
+        "title": "Fictional Dreams",
+        "genre": "Science",
+        "published_year": 1976,
+        "author_id": 2
+    },
+    {
+        "title": "Life of Pi",
+        "genre": "Non-Fiction",
+        "published_year": 1858,
+        "author_id": 2
+    },
+    {
+        "title": "Journey to Mars",
+        "genre": "History",
+        "published_year": 2003,
+        "author_id": 4
+    },
+    {
+        "title": "The Last Kingdom",
+        "genre": "History",
+        "published_year": 1885,
+        "author_id": 5
+    },
+    {
+        "title": "Ocean Secrets",
+        "genre": "Non-Fiction",
+        "published_year": 1878,
+        "author_id": 4
+    },
+    {
+        "title": "Time Machine",
+        "genre": "Fiction",
+        "published_year": 1864,
+        "author_id": 1
+    },
+    {
+        "title": "New Dawn",
+        "genre": "Non-Fiction",
+        "published_year": 1917,
+        "author_id": 4
+    },
+    {
+        "title": "Quantum Leap",
+        "genre": "Science",
+        "published_year": 1909,
+        "author_id": 5
+    },
+    {
+        "title": "Mind Games",
+        "genre": "Science",
+        "published_year": 1945,
+        "author_id": 4
+    },
+    {
+        "title": "The Great War",
+        "genre": "Fiction",
+        "published_year": 1858,
+        "author_id": 5
+    },
+    {
+        "title": "Ancient Myths",
+        "genre": "History",
+        "published_year": 1913,
+        "author_id": 4
+    },
+    {
+        "title": "World of Science",
+        "genre": "History",
+        "published_year": 1930,
+        "author_id": 5
+    },
+    {
+        "title": "Non-Fiction Truths",
+        "genre": "History",
+        "published_year": 1946,
+        "author_id": 3
+    },
+    {
+        "title": "Shadows of History",
+        "genre": "Science",
+        "published_year": 1979,
+        "author_id": 5
+    },
+    {
+        "title": "Cosmic Tales",
+        "genre": "Fiction",
+        "published_year": 2000,
+        "author_id": 2
+    },
+    {
+        "title": "Digital Era",
+        "genre": "History",
+        "published_year": 1910,
+        "author_id": 1
+    },
+    {
+        "title": "Medieval Legends",
+        "genre": "Science",
+        "published_year": 1977,
+        "author_id": 4
+    },
+    {
+        "title": "Fiction Fever",
+        "genre": "History",
+        "published_year": 1890,
+        "author_id": 1
+    },
+    {
+        "title": "Hidden Universe",
+        "genre": "Science",
+        "published_year": 1960,
+        "author_id": 5
+    },
+    {
+        "title": "Parallel Worlds",
+        "genre": "Non-Fiction",
+        "published_year": 1903,
+        "author_id": 2
+    },
+    {
+        "title": "Philosophy Today",
+        "genre": "Non-Fiction",
+        "published_year": 1877,
+        "author_id": 3
+    },
+    {
+        "title": "Great Discoveries",
+        "genre": "Fiction",
+        "published_year": 1931,
+        "author_id": 3
+    },
+    {
+        "title": "Science & Future",
+        "genre": "History",
+        "published_year": 1990,
+        "author_id": 4
+    },
+    {
+        "title": "Unknown Paths",
+        "genre": "Non-Fiction",
+        "published_year": 1861,
+        "author_id": 3
+    },
+    {
+        "title": "Legends of Earth",
+        "genre": "Science",
+        "published_year": 1918,
+        "author_id": 5
+    }
+]
