@@ -7,6 +7,9 @@ from typing import List, Optional, Literal
 import json
 from src.auth.dependencies import get_current_user
 from src.core.limiter import limiter
+from fastapi.responses import JSONResponse, StreamingResponse
+import io
+import csv
 
 router = APIRouter(prefix="/books", tags=["Books"])
 
@@ -51,7 +54,8 @@ async def read_book(request: Request, book_id: int, db: AsyncSession = Depends(g
 
 
 @router.put("/{book_id}", response_model=BookOut)
-async def update_book(book_id: int, book: BookUpdate, db: AsyncSession = Depends(get_db), user=Depends(get_current_user)):
+async def update_book(book_id: int, book: BookUpdate, db: AsyncSession = Depends(get_db),
+                      user=Depends(get_current_user)):
     updated_book = await books.update_book(db, book_id, book)
     if not updated_book:
         raise HTTPException(status_code=404, detail="Book not found")
@@ -68,8 +72,8 @@ async def delete_book(book_id: int, db: AsyncSession = Depends(get_db), user=Dep
 
 @router.post("/bulk", response_model=List[BookOut])
 async def bulk_import_books(
-    db: AsyncSession = Depends(get_db),
-    file: UploadFile = File(...)
+        db: AsyncSession = Depends(get_db),
+        file: UploadFile = File(...)
 ):
     if not file.filename.endswith(".json"):
         raise HTTPException(status_code=400, detail="Only JSON files are supported")
@@ -82,3 +86,27 @@ async def bulk_import_books(
 
     books_list = [BookCreate(**item) for item in data]
     return await books.bulk_import_books(db, books_list)
+
+
+@router.get("/export/json")
+async def export_books_json(db: AsyncSession = Depends(get_db)):
+    books_list = await books.get_books(db)
+    return JSONResponse(content=[dict(row) for row in books_list])
+
+
+@router.get("/export/csv")
+async def export_books_csv(db: AsyncSession = Depends(get_db)):
+    books_list = await books.get_books(db)
+
+    output = io.StringIO()
+    writer = csv.DictWriter(output, fieldnames=["id", "title", "genre", "published_year", "author_id"])
+    writer.writeheader()
+    for row in books_list:
+        writer.writerow(dict(row))
+
+    output.seek(0)
+    return StreamingResponse(
+        iter([output.getvalue()]),
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=books.csv"}
+    )
