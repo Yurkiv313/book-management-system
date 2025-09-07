@@ -28,12 +28,14 @@ async def bulk_import_authors(db: AsyncSession, authors: List[AuthorCreate]):
 
         if row:  # вже є → додаємо у results, але не вставляємо
             results.append(row)
-        else:    # ще нема → вставляємо
-            insert_query = text("""
+        else:  # ще нема → вставляємо
+            insert_query = text(
+                """
                 INSERT INTO authors (name)
                 VALUES (:name)
                 RETURNING id, name
-            """)
+            """
+            )
             result = await db.execute(insert_query, {"name": author.name})
             row = result.mappings().first()
             results.append(row)

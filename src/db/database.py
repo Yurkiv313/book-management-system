@@ -25,7 +25,7 @@ SessionLocal = sessionmaker(
     expire_on_commit=False,
     autocommit=False,
     autoflush=False,
-    future=True
+    future=True,
 )
 
 

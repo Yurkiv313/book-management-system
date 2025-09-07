@@ -11,13 +11,18 @@ async def create_book(db: AsyncSession, book: BookCreate):
     author = result.mappings().first()
 
     if not author:
-        raise HTTPException(status_code=400, detail=f"Author with id {book.author_id} does not exist")
+        raise HTTPException(
+            status_code=400,
+            detail=f"Author with id {book.author_id} does not exist"
+        )
 
-    query = text("""
+    query = text(
+        """
         INSERT INTO books (title, genre, published_year, author_id)
         VALUES (:title, :genre, :published_year, :author_id)
         RETURNING id, title, genre, published_year, author_id
-    """)
+    """
+    )
     result = await db.execute(query, book.model_dump())
     row = result.mappings().first()
     await db.commit()
@@ -25,15 +30,15 @@ async def create_book(db: AsyncSession, book: BookCreate):
 
 
 async def get_books(
-        db: AsyncSession,
-        title: str = None,
-        genre: str = None,
-        year_from: int = None,
-        year_to: int = None,
-        limit: int = 10,
-        offset: int = 0,
-        sort_by: str = "id",
-        sort_order: str = "asc"
+    db: AsyncSession,
+    title: str = None,
+    genre: str = None,
+    year_from: int = None,
+    year_to: int = None,
+    limit: int = 10,
+    offset: int = 0,
+    sort_by: str = "id",
+    sort_order: str = "asc",
 ):
     query = "SELECT * FROM books WHERE 1=1"
     params = {}
@@ -83,12 +88,14 @@ async def update_book(db: AsyncSession, book_id: int, book_data: BookUpdate):
     set_clause = ", ".join([f"{k} = :{k}" for k in fields.keys()])
     fields["id"] = book_id
 
-    query = text(f"""
+    query = text(
+        f"""
         UPDATE books
         SET {set_clause}
         WHERE id = :id
         RETURNING id, title, genre, published_year, author_id
-    """)
+    """
+    )
     result = await db.execute(query, fields)
     row = result.mappings().first()
     await db.commit()
@@ -96,11 +103,13 @@ async def update_book(db: AsyncSession, book_id: int, book_data: BookUpdate):
 
 
 async def delete_book(db: AsyncSession, book_id: int):
-    query = text("""
+    query = text(
+        """
         DELETE FROM books
         WHERE id = :id
         RETURNING id
-    """)
+    """
+    )
     result = await db.execute(query, {"id": book_id})
     row = result.mappings().first()
     await db.commit()
@@ -113,31 +122,36 @@ async def bulk_import_books(db: AsyncSession, books: List[BookCreate]):
         check_author = text("SELECT id FROM authors WHERE id = :id")
         author = await db.execute(check_author, {"id": book.author_id})
         if not author.mappings().first():
-            raise HTTPException(status_code=400, detail=f"Author with id {book.author_id} does not exist")
+            raise HTTPException(
+                status_code=400,
+                detail=f"Author with id {book.author_id} does not exist",
+            )
 
-        check_query = text("""
+        check_query = text(
+            """
             SELECT id, title, genre, published_year, author_id
             FROM books
             WHERE title = :title AND author_id = :author_id
-        """)
-        existing = await db.execute(check_query, {
-            "title": book.title,
-            "author_id": book.author_id
-        })
+        """
+        )
+        existing = await db.execute(
+            check_query, {"title": book.title, "author_id": book.author_id}
+        )
         row = existing.mappings().first()
 
         if row:
             results.append(row)
         else:
-            insert_query = text("""
+            insert_query = text(
+                """
                 INSERT INTO books (title, genre, published_year, author_id)
                 VALUES (:title, :genre, :published_year, :author_id)
                 RETURNING id, title, genre, published_year, author_id
-            """)
+            """
+            )
             result = await db.execute(insert_query, book.dict())
             row = result.mappings().first()
             results.append(row)
 
     await db.commit()
     return results
-

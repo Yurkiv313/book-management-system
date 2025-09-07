@@ -1,4 +1,11 @@
-from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, Request
+from fastapi import (
+    APIRouter,
+    Depends,
+    UploadFile,
+    File,
+    HTTPException,
+    Request
+)
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.db.database import get_db
 from src.crud import authors
@@ -12,7 +19,10 @@ router = APIRouter(prefix="/authors", tags=["Authors"])
 
 
 @router.post("/", response_model=AuthorOut)
-async def create_author(author: AuthorCreate, db: AsyncSession = Depends(get_db)):
+async def create_author(
+        author: AuthorCreate,
+        db: AsyncSession = Depends(get_db)
+):
     return await authors.create_author(db, author)
 
 
@@ -24,11 +34,13 @@ async def read_authors(request: Request, db: AsyncSession = Depends(get_db)):
 
 @router.post("/bulk", response_model=List[AuthorOut])
 async def bulk_import_authors(
-    db: AsyncSession = Depends(get_db),
-    file: UploadFile = File(...)
+    db: AsyncSession = Depends(get_db), file: UploadFile = File(...)
 ):
     if not file.filename.endswith(".json"):
-        raise HTTPException(status_code=400, detail="Only JSON files are supported")
+        raise HTTPException(
+            status_code=400,
+            detail="Only JSON files are supported"
+        )
 
     try:
         content = await file.read()
