@@ -28,10 +28,10 @@ class BookCreate(BookBase):
 
 
 class BookUpdate(BaseModel):
-    title: Optional[str]
-    genre: GenreEnum
-    published_year: Optional[int]
-    author_id: Optional[int]
+    title: Optional[str] = None
+    genre: Optional[GenreEnum] = None
+    published_year: Optional[int] = None
+    author_id: Optional[int] = None
 
     @field_validator("published_year")
     @classmethod

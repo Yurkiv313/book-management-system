@@ -2,6 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text
 from src.schemas.book import BookCreate, BookUpdate
 from typing import List
+from fastapi import HTTPException
 
 
 async def create_book(db: AsyncSession, book: BookCreate):
@@ -17,7 +18,7 @@ async def create_book(db: AsyncSession, book: BookCreate):
         VALUES (:title, :genre, :published_year, :author_id)
         RETURNING id, title, genre, published_year, author_id
     """)
-    result = await db.execute(query, book.dict())
+    result = await db.execute(query, book.model_dump())
     row = result.mappings().first()
     await db.commit()
     return row
@@ -38,8 +39,8 @@ async def get_books(
     params = {}
 
     if title:
-        query += " AND title ILIKE :title"
-        params["title"] = f"%{title}%"
+        query += " AND LOWER(title) LIKE :title"
+        params["title"] = f"%{title.lower()}%"
 
     if genre:
         query += " AND genre = :genre"
@@ -75,7 +76,7 @@ async def get_book(db: AsyncSession, book_id: int):
 
 
 async def update_book(db: AsyncSession, book_id: int, book_data: BookUpdate):
-    fields = book_data.dict(exclude_unset=True)
+    fields = book_data.model_dump(exclude_unset=True)
     if not fields:
         return None
 
@@ -109,14 +110,11 @@ async def delete_book(db: AsyncSession, book_id: int):
 async def bulk_import_books(db: AsyncSession, books: List[BookCreate]):
     results = []
     for book in books:
-        # Перевірка чи автор існує
         check_author = text("SELECT id FROM authors WHERE id = :id")
         author = await db.execute(check_author, {"id": book.author_id})
         if not author.mappings().first():
-            # Пропускаємо або кидаємо помилку — я пропоную помилку
             raise HTTPException(status_code=400, detail=f"Author with id {book.author_id} does not exist")
 
-        # Перевірка чи книга існує
         check_query = text("""
             SELECT id, title, genre, published_year, author_id
             FROM books

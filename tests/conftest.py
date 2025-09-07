@@ -6,8 +6,17 @@ from sqlalchemy.orm import sessionmaker
 from src.db.models import Base
 from src.db.database import get_db
 from src.main import app
+from src.auth.dependencies import get_current_user
 
 
+# Завжди підміняємо get_current_user на фейкового користувача
+app.dependency_overrides[get_current_user] = lambda: {
+    "id": 1,
+    "email": "test@example.com",
+    "role": "user"
+}
+
+# Використовуємо SQLite in-memory для тестів
 DATABASE_URL = "sqlite+aiosqlite:///:memory:"
 
 engine = create_async_engine(DATABASE_URL, future=True, echo=False)
@@ -34,6 +43,7 @@ async def client(db_session):
     async def override_get_db():
         yield db_session
 
+    # Підміняємо get_db тільки на цей сесійний
     app.dependency_overrides[get_db] = override_get_db
 
     async with AsyncClient(
@@ -41,5 +51,3 @@ async def client(db_session):
         base_url="http://test"
     ) as ac:
         yield ac
-
-    app.dependency_overrides.clear()
