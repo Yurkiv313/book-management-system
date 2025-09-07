@@ -12,3 +12,6 @@ dotenv
 pydantic[email]
 greenlet
 python-multipart
+pytest
+pytest-asyncio
+httpx

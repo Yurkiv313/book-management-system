@@ -1,7 +1,6 @@
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator, ConfigDict
 from typing import Optional
 from enum import Enum
-from datetime import datetime
 
 
 class GenreEnum(str, Enum):
@@ -16,11 +15,11 @@ class BookBase(BaseModel):
     genre: GenreEnum
     published_year: int
 
-    @validator("published_year")
+    @field_validator("published_year")
+    @classmethod
     def validate_year(cls, v):
-        current_year = datetime.now().year
-        if v < 1800 or v > current_year:
-            raise ValueError(f"published_year must be between 1800 and {current_year}")
+        if v < 0:
+            raise ValueError("Year must be positive")
         return v
 
 
@@ -34,11 +33,11 @@ class BookUpdate(BaseModel):
     published_year: Optional[int]
     author_id: Optional[int]
 
-    @validator("published_year")
+    @field_validator("published_year")
+    @classmethod
     def validate_year(cls, v):
-        current_year = datetime.now().year
-        if v < 1800 or v > current_year:
-            raise ValueError(f"published_year must be between 1800 and {current_year}")
+        if v < 0:
+            raise ValueError("Year must be positive")
         return v
 
 
@@ -46,5 +45,4 @@ class BookOut(BookBase):
     id: int
     author_id: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

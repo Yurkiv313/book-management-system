@@ -30,8 +30,8 @@ async def read_books(
         year_to: Optional[int] = Query(None),
         limit: int = Query(10, ge=1, le=100),
         offset: int = Query(0, ge=0),
-        sort_by: str = Query("id", regex="^(id|title|published_year|author_id)$"),
-        sort_order: str = Query("asc", regex="^(asc|desc)$")
+        sort_by: str = Query("id", pattern="^(id|title|published_year|author_id)$"),
+        sort_order: str = Query("asc", pattern="^(asc|desc)$")
 ):
     return await books.get_books(
         db, title, genre, year_from, year_to, limit, offset, sort_by, sort_order
