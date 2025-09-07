@@ -1,10 +1,12 @@
-from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
+from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.db.database import get_db
 from src.crud import authors
 from src.schemas.author import AuthorCreate, AuthorOut
 from typing import List
 import json
+from src.core.limiter import limiter
+
 
 router = APIRouter(prefix="/authors", tags=["Authors"])
 
@@ -15,7 +17,8 @@ async def create_author(author: AuthorCreate, db: AsyncSession = Depends(get_db)
 
 
 @router.get("/", response_model=List[AuthorOut])
-async def read_authors(db: AsyncSession = Depends(get_db)):
+@limiter.limit("10/minute")
+async def read_authors(request: Request, db: AsyncSession = Depends(get_db)):
     return await authors.get_authors(db)
 
 

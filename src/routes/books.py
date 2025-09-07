@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, File, UploadFile
+from fastapi import APIRouter, Depends, HTTPException, Query, File, UploadFile, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.db.database import get_db
 from src.crud import books
@@ -6,6 +6,7 @@ from src.schemas.book import BookCreate, BookOut, BookUpdate
 from typing import List, Optional, Literal
 import json
 from src.auth.dependencies import get_current_user
+from src.core.limiter import limiter
 
 router = APIRouter(prefix="/books", tags=["Books"])
 
@@ -22,7 +23,9 @@ async def create_book(
 
 
 @router.get("/", response_model=List[BookOut])
+@limiter.limit("10/minute")
 async def read_books(
+        request: Request,
         db: AsyncSession = Depends(get_db),
         title: Optional[str] = Query(None),
         genre: Optional[GenreLiteral] = Query(None),
@@ -39,7 +42,8 @@ async def read_books(
 
 
 @router.get("/{book_id}", response_model=BookOut)
-async def read_book(book_id: int, db: AsyncSession = Depends(get_db)):
+@limiter.limit("10/minute")
+async def read_book(request: Request, book_id: int, db: AsyncSession = Depends(get_db)):
     book = await books.get_book(db, book_id)
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
