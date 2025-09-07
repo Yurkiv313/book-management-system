@@ -8,3 +8,4 @@ passlib[bcrypt]
 python-jose
 pydantic
 flake8
+dotenv
