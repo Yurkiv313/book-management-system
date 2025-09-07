@@ -11,3 +11,4 @@ flake8
 dotenv
 pydantic[email]
 greenlet
+python-multipart
